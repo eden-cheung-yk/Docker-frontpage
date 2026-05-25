@@ -1,0 +1,406 @@
+/* ═══════════════════════════════════════════════════════════════════
+   DockerDash — Global Styles & Theme System
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Reset ──────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  line-height: 1.6;
+  font-family: var(--font-body), sans-serif;
+  font-size: var(--font-size-base, 15px);
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  transition: background var(--transition-normal), color var(--transition-normal);
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font: inherit; border: none; background: none; color: inherit; }
+input, textarea, select { font: inherit; color: inherit; background: transparent; border: none; outline: none; }
+ul, ol { list-style: none; }
+img { display: block; max-width: 100%; }
+
+/* ── react-grid-layout required styles ─────────────────────────── */
+.react-grid-layout {
+  position: relative;
+  transition: height 200ms ease;
+}
+.react-grid-item {
+  transition: all 200ms ease;
+  transition-property: left, top, width, height;
+}
+.react-grid-item.cssTransforms {
+  transition-property: transform, width, height;
+}
+.react-grid-item.resizing {
+  opacity: 0.9;
+  z-index: 3;
+}
+.react-grid-item.react-draggable-dragging {
+  z-index: 4;
+  opacity: 0.85;
+  will-change: transform;
+}
+.react-grid-placeholder {
+  background: var(--accent-primary) !important;
+  opacity: 0.15;
+  border-radius: var(--border-radius);
+  border: 2px dashed var(--accent-primary);
+}
+.react-grid-item > .react-resizable-handle {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+  z-index: 10;
+}
+.react-grid-item > .react-resizable-handle::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-right: 2.5px solid var(--accent-primary);
+  border-bottom: 2.5px solid var(--accent-primary);
+  opacity: 0.6;
+  transition: opacity var(--transition-fast);
+}
+.react-grid-item > .react-resizable-handle:hover::after {
+  opacity: 1;
+}
+.react-grid-item > .react-resizable-handle.react-resizable-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: se-resize;
+}
+
+/* ── Keyframe animations ───────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes slideInDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+@keyframes neon-flicker {
+  0%, 100% { opacity: 1; }
+  92%      { opacity: 1; }
+  93%      { opacity: 0.8; }
+  94%      { opacity: 1; }
+  96%      { opacity: 0.9; }
+  97%      { opacity: 1; }
+}
+
+@keyframes scanlines {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* ── Base component classes ────────────────────────────────────── */
+.fade-in {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-card) 25%,
+    var(--bg-card-hover) 50%,
+    var(--bg-card) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  border-radius: var(--border-radius);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.status-dot--running { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); animation: pulse-glow 2s ease-in-out infinite; }
+.status-dot--stopped { background: #ef4444; }
+.status-dot--unhealthy { background: #f59e0b; animation: pulse-glow 1.2s ease-in-out infinite; }
+.status-dot--paused { background: #8b8b8b; }
+
+/* ── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ── Focus styles ──────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME 1: DARK NEON (default)
+   Deep space navy + electric cyan + hot magenta
+   ══════════════════════════════════════════════════════════════════ */
+[data-theme="dark-neon"],
+:root {
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #0f1328;
+  --bg-card: #111827;
+  --bg-card-hover: #162037;
+  --bg-card-active: #1a2744;
+  --text-primary: #e8ecf4;
+  --text-secondary: #94a3b8;
+  --text-muted: #475569;
+  --accent-primary: #00f0ff;
+  --accent-secondary: #e94560;
+  --accent-highlight: #7c3aed;
+  --border-color: rgba(0, 240, 255, 0.08);
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(0, 240, 255, 0.15), 0 0 40px rgba(0, 240, 255, 0.05);
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --widget-gap: 16px;
+  --topbar-bg: rgba(10, 14, 26, 0.85);
+  --card-border-hover: rgba(0, 240, 255, 0.25);
+  --card-glow-hover: 0 0 24px rgba(0, 240, 255, 0.12), 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME 2: GLASSMORPHISM
+   Frosted glass cards on a rich gradient backdrop
+   ══════════════════════════════════════════════════════════════════ */
+[data-theme="glassmorphism"] {
+  --bg-primary: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a3a4a 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.04);
+  --bg-card: rgba(255, 255, 255, 0.06);
+  --bg-card-hover: rgba(255, 255, 255, 0.1);
+  --bg-card-active: rgba(255, 255, 255, 0.14);
+  --text-primary: #f1f5f9;
+  --text-secondary: #c4b5d4;
+  --text-muted: #7c6f8a;
+  --accent-primary: #a78bfa;
+  --accent-secondary: #f472b6;
+  --accent-highlight: #38bdf8;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --border-radius: 16px;
+  --border-radius-lg: 20px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 30px rgba(167, 139, 250, 0.15);
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --widget-gap: 16px;
+  --topbar-bg: rgba(26, 26, 62, 0.6);
+  --card-border-hover: rgba(255, 255, 255, 0.2);
+  --card-glow-hover: 0 8px 32px rgba(167, 139, 250, 0.15);
+}
+
+[data-theme="glassmorphism"] body {
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a3a4a 100%);
+  background-attachment: fixed;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME 3: MINIMAL LIGHT
+   Clean, editorial, refined
+   ══════════════════════════════════════════════════════════════════ */
+[data-theme="minimal-light"] {
+  --bg-primary: #fafaf9;
+  --bg-secondary: #f5f5f4;
+  --bg-card: #ffffff;
+  --bg-card-hover: #fafafa;
+  --bg-card-active: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #525252;
+  --text-muted: #a3a3a3;
+  --accent-primary: #1a1a1a;
+  --accent-secondary: #dc2626;
+  --accent-highlight: #2563eb;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-fast: 0.12s ease;
+  --transition-normal: 0.25s ease;
+  --widget-gap: 16px;
+  --topbar-bg: rgba(250, 250, 249, 0.9);
+  --card-border-hover: rgba(0, 0, 0, 0.12);
+  --card-glow-hover: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME 4: MATERIAL DARK
+   Material Design 3 elevation system
+   ══════════════════════════════════════════════════════════════════ */
+[data-theme="material-dark"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1a1a1a;
+  --bg-card: #1e1e1e;
+  --bg-card-hover: #252525;
+  --bg-card-active: #2c2c2c;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --text-muted: #616161;
+  --accent-primary: #03dac6;
+  --accent-secondary: #ff9800;
+  --accent-highlight: #bb86fc;
+  --border-color: rgba(255, 255, 255, 0.06);
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.5), 0 3px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.5), 0 6px 6px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 12px rgba(3, 218, 198, 0.1);
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-fast: 0.1s ease;
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --widget-gap: 16px;
+  --topbar-bg: rgba(18, 18, 18, 0.9);
+  --card-border-hover: rgba(3, 218, 198, 0.15);
+  --card-glow-hover: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   THEME 5: CYBERPUNK
+   Terminal green + hot pink on void black
+   ══════════════════════════════════════════════════════════════════ */
+[data-theme="cyberpunk"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f0f0f;
+  --bg-card: #111111;
+  --bg-card-hover: #1a1a1a;
+  --bg-card-active: #222222;
+  --text-primary: #e0e0e0;
+  --text-secondary: #00ff41;
+  --text-muted: #335533;
+  --accent-primary: #00ff41;
+  --accent-secondary: #ff2d6a;
+  --accent-highlight: #ffee00;
+  --border-color: rgba(0, 255, 65, 0.15);
+  --border-radius: 4px;
+  --border-radius-lg: 6px;
+  --shadow-sm: 0 0 4px rgba(0, 255, 65, 0.1);
+  --shadow-md: 0 0 12px rgba(0, 255, 65, 0.08);
+  --shadow-lg: 0 0 24px rgba(0, 255, 65, 0.12);
+  --shadow-glow: 0 0 20px rgba(0, 255, 65, 0.2), 0 0 40px rgba(0, 255, 65, 0.05);
+  --font-heading: 'Space Mono', monospace;
+  --font-body: 'JetBrains Mono', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
+  --transition-fast: 0.08s ease;
+  --transition-normal: 0.2s ease;
+  --widget-gap: 12px;
+  --topbar-bg: rgba(10, 10, 10, 0.95);
+  --card-border-hover: rgba(0, 255, 65, 0.4);
+  --card-glow-hover: 0 0 20px rgba(0, 255, 65, 0.15), inset 0 0 20px rgba(0, 255, 65, 0.03);
+}
+
+[data-theme="cyberpunk"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 65, 0.015) 2px,
+    rgba(0, 255, 65, 0.015) 4px
+  );
+  animation: scanlines 0.4s linear infinite;
+}
+
+/* ── Theme-aware background handling ───────────────────────────── */
+[data-theme="glassmorphism"] body {
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a3a4a 100%);
+  background-attachment: fixed;
+}
+
+/* ── Glassmorphism-specific card styling ───────────────────────── */
+[data-theme="glassmorphism"] .widget-card {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Font size scales ──────────────────────────────────────────── */
+[data-font-size="small"]  { --font-size-base: 13px; }
+[data-font-size="medium"] { --font-size-base: 15px; }
+[data-font-size="large"]  { --font-size-base: 17px; }
+
+/* ── Utility classes ───────────────────────────────────────────── */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

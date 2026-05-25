@@ -1,0 +1,42 @@
+{
+  "name": "dockerdash",
+  "version": "1.0.0",
+  "description": "A beautiful, customizable Docker dashboard that auto-detects your containers and provides widgets for weather, news, system monitoring, and more. No config files needed.",
+  "keywords": [
+    "docker",
+    "dashboard",
+    "homepage",
+    "self-hosted",
+    "docker-dashboard",
+    "landing-page",
+    "widgets",
+    "home-server",
+    "homelab"
+  ],
+  "license": "MIT",
+  "author": "DockerDash Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/dockerdash.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_USERNAME/dockerdash/issues"
+  },
+  "homepage": "https://github.com/YOUR_USERNAME/dockerdash#readme",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "start": "cd server && npm start",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

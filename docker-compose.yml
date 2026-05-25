@@ -1,0 +1,19 @@
+services:
+  dockerdash:
+    image: dockerdash:latest
+    build: .
+    container_name: dockerdash
+    ports:
+      - "3080:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - dockerdash_data:/app/data
+      # Optional: enable System Monitor widget (CPU, RAM, disk)
+      # - /proc:/host/proc:ro
+      # - /sys:/host/sys:ro
+    environment:
+      - HOST_URL=http://YOUR_SERVER_IP
+    restart: unless-stopped
+
+volumes:
+  dockerdash_data:
