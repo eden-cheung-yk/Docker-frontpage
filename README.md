@@ -1,11 +1,14 @@
 # DockerDash
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![GHCR](https://img.shields.io/badge/GHCR-ghcr.io-blue?logo=github)](https://github.com/eden-cheung-yk/Docker-frontpage/pkgs/container/docker-frontpage)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](Dockerfile)
 [![Node.js](https://img.shields.io/badge/Node.js-22-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev)
 
 A beautiful, self-hosted Docker dashboard that auto-detects your containers and gives you a fully customizable home page for your server. No config files, no YAML editing -- everything is managed through a point-and-click GUI.
+
+**Pre-built image:** `ghcr.io/eden-cheung-yk/docker-frontpage:latest`
 
 ## Features
 
@@ -20,15 +23,16 @@ A beautiful, self-hosted Docker dashboard that auto-detects your containers and 
 - **Export / Import** -- Backup and restore your entire configuration as JSON
 - **Lightweight** -- ~150MB Docker image, SQLite database, no external dependencies
 
-## Quick Start
+## Quick Start (Docker Compose)
+
+The fastest way to run DockerDash — no build step required.
 
 ### 1. Create `docker-compose.yml`
 
 ```yaml
 services:
   dockerdash:
-    image: dockerdash:latest
-    build: .
+    image: ghcr.io/eden-cheung-yk/docker-frontpage:latest
     container_name: dockerdash
     ports:
       - "3080:3000"
@@ -43,17 +47,60 @@ volumes:
   dockerdash_data:
 ```
 
-> Replace `YOUR_SERVER_IP` with your server's IP (run `hostname -I` on Linux or `ipconfig` on Windows to find it).
+> Replace `YOUR_SERVER_IP` with your server's IP (run `hostname -I` on Linux or `ipconfig` on Windows).
 
-### 2. Start
+**Linux users:** if containers are not detected, set your host's Docker group ID before starting:
+```bash
+export DOCKER_GID=$(getent group docker | cut -d: -f3)
+```
+Then add under the service in `docker-compose.yml`:
+```yaml
+    group_add:
+      - "${DOCKER_GID}"
+```
+
+### 2. Pull and start
 
 ```bash
+docker compose pull
 docker compose up -d
 ```
 
 ### 3. Open
 
 Go to **http://YOUR_SERVER_IP:3080** in your browser.
+
+---
+
+## Alternative: Docker Run (no Compose)
+
+```bash
+docker pull ghcr.io/eden-cheung-yk/docker-frontpage:latest
+
+docker run -d \
+  --name dockerdash \
+  --restart unless-stopped \
+  -p 3080:3000 \
+  -v /var/run/docker.sock:/var/run/docker.sock:ro \
+  -v dockerdash_data:/app/data \
+  -e HOST_URL=http://YOUR_SERVER_IP \
+  ghcr.io/eden-cheung-yk/docker-frontpage:latest
+```
+
+---
+
+## Updating
+
+Pull the latest image and recreate the container:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+Your settings and layout are stored in the `dockerdash_data` volume and are preserved across updates.
+
+---
 
 ## Usage
 
@@ -72,16 +119,12 @@ Go to **http://YOUR_SERVER_IP:3080** in your browser.
 3. Fill in name, URL, optional group and description
 4. Click **Add Service**
 
-Auto-detected Docker containers and manual services appear side by side.
-
 ### Changing Language
 
 1. Open **Settings** > **General** tab
 2. Click any language to switch instantly
 
 ### API Keys for Widgets
-
-Some widgets need a free API key:
 
 | Widget | Free Key From |
 |--------|--------------|
@@ -93,11 +136,13 @@ Enter Edit Mode, click the gear on the widget, and paste your key.
 
 ## Environment Variables
 
+Set these under `environment` in `docker-compose.yml`:
+
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `HOST_URL` | Your server's IP/hostname for container links | *(auto-detect)* |
-| `DASHBOARD_TITLE` | Title shown at the top | `DockerDash` |
+| `HOST_URL` | Your server's IP/hostname for container links | *(empty)* |
 | `PORT` | Internal port (rarely needs changing) | `3000` |
+| `DATA_DIR` | SQLite database path inside container | `/app/data` |
 
 ## Optional: System Monitoring
 
@@ -126,22 +171,25 @@ services:
       - "dockerdash.description=Movies and TV"
 ```
 
-This is entirely optional -- you can manage everything from the Settings UI.
-
 ## Building from Source
+
+For development or if you prefer to build locally instead of pulling from GHCR:
 
 ```bash
 git clone https://github.com/eden-cheung-yk/Docker-frontpage.git
-cd dockerdash
+cd Docker-frontpage
 npm run install:all
 
 # Development (two terminals)
 cd server && npm run dev     # Backend on port 3000
 cd client && npm run dev     # Frontend on port 5173
 
-# Or build the Docker image
-docker build -t dockerdash:latest .
+# Build and run locally
+docker build -t docker-frontpage:local .
+docker compose -f docker-compose.yml up -d   # temporarily set image: docker-frontpage:local
 ```
+
+CI automatically builds and publishes `ghcr.io/eden-cheung-yk/docker-frontpage:latest` on every push to `main`.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development guide.
 
@@ -151,14 +199,15 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full development guide.
 |-------|-----------|
 | Frontend | React 19, TypeScript, Vite, react-grid-layout |
 | Backend | Node.js 22, Express 5, SQLite (better-sqlite3) |
-| Docker | Dockerode, multi-stage Alpine build |
+| Docker | Dockerode, multi-stage Alpine build, GHCR |
 | Icons | Lucide React |
 
 ## Troubleshooting
 
 | Problem | Solution |
 |---------|----------|
-| No containers detected | Mount Docker socket: `-v /var/run/docker.sock:/var/run/docker.sock:ro` |
+| Can't pull image | Ensure the [GHCR package](https://github.com/eden-cheung-yk/Docker-frontpage/pkgs/container/docker-frontpage) is public, or run `docker login ghcr.io` |
+| No containers detected | Mount Docker socket: `-v /var/run/docker.sock:/var/run/docker.sock:ro`. On Linux, set `DOCKER_GID` (see Quick Start) |
 | Container links don't work | Set `HOST_URL` to your server's IP in docker-compose.yml or Settings > Docker |
 | Weather/Stocks not loading | Add a free API key via the widget's gear icon in Edit Mode |
 | Can't access dashboard | Check port 3080 isn't firewalled. Run `curl http://localhost:3080/api/health` on the server |

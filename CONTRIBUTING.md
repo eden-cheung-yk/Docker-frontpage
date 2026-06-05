@@ -14,7 +14,7 @@ Thanks for your interest in contributing! Here's how to get started.
 
 ```bash
 git clone https://github.com/eden-cheung-yk/Docker-frontpage.git
-cd dockerdash
+cd Docker-frontpage
 npm run install:all
 ```
 
@@ -32,11 +32,28 @@ cd client && npm run dev
 
 Open http://localhost:5173 in your browser.
 
-### Build Docker Image Locally
+### Run Pre-built Image (GHCR)
+
+Most users should pull the published image — no build required:
 
 ```bash
-docker build -t dockerdash:latest .
-docker run -p 3080:3000 -v /var/run/docker.sock:/var/run/docker.sock:ro dockerdash:latest
+docker pull ghcr.io/eden-cheung-yk/docker-frontpage:latest
+docker compose up -d
+```
+
+Image URL: `ghcr.io/eden-cheung-yk/docker-frontpage:latest`  
+Published automatically on every push to `main` via GitHub Actions.
+
+### Build Docker Image Locally
+
+For testing Dockerfile changes before they are published:
+
+```bash
+docker build -t docker-frontpage:local .
+docker run -p 3080:3000 \
+  -v /var/run/docker.sock:/var/run/docker.sock:ro \
+  -v dockerdash_data:/app/data \
+  docker-frontpage:local
 ```
 
 ## Project Structure

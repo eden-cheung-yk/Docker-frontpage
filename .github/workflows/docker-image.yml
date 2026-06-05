@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -31,4 +32,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/eden-cheung-yk/docker-frontpage:latest
+          tags: |
+            ghcr.io/eden-cheung-yk/docker-frontpage:latest
+            ghcr.io/eden-cheung-yk/docker-frontpage:${{ github.sha }}
+          build-args: |
+            VERSION=${{ github.ref_name }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}

@@ -1,7 +1,6 @@
 services:
   dockerdash:
-    image: dockerdash:latest
-    build: .
+    image: ghcr.io/eden-cheung-yk/docker-frontpage:latest
     container_name: dockerdash
     ports:
       - "3080:3000"
@@ -11,7 +10,7 @@ services:
       # Optional: enable System Monitor widget (CPU, RAM, disk)
       # - /proc:/host/proc:ro
       # - /sys:/host/sys:ro
-    # Match host docker group so non-root user can read the socket (Linux):
+    # Linux only — lets the non-root container user read the Docker socket:
     # export DOCKER_GID=$(getent group docker | cut -d: -f3)
     group_add:
       - "${DOCKER_GID:-0}"
