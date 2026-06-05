@@ -6,6 +6,7 @@
     "allowImportingTsExtensions": true,
     "strict": true,
     "composite": true,
+    "emitDeclarationOnly": true,
     "skipLibCheck": true
   },
   "include": ["vite.config.ts"]

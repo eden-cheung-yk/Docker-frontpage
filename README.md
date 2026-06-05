@@ -14,6 +14,7 @@ A beautiful, self-hosted Docker dashboard that auto-detects your containers and 
 - **Drag & Drop Layout** -- Move and resize widgets freely with a visual editor
 - **5 Themes** -- Dark Neon, Glassmorphism, Minimal Light, Material Dark, Cyberpunk
 - **11 Languages** -- English, 简体中文, 繁體中文, Español, Français, Deutsch, 日本語, 한국어, Português, Русский, العربية (with RTL)
+- **Smart Header** -- Time-based greeting, health status pills, and universal service search (`Ctrl+K`)
 - **GUI Everything** -- All settings, services, and layout managed through the web interface
 - **Manual Services** -- Add any URL (NAS, router, apps) alongside auto-detected containers
 - **Export / Import** -- Backup and restore your entire configuration as JSON
@@ -130,7 +131,7 @@ This is entirely optional -- you can manage everything from the Settings UI.
 ## Building from Source
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dockerdash.git
+git clone https://github.com/eden-cheung-yk/Docker-frontpage.git
 cd dockerdash
 npm run install:all
 

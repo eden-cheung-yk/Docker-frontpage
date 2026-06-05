@@ -11,6 +11,10 @@ services:
       # Optional: enable System Monitor widget (CPU, RAM, disk)
       # - /proc:/host/proc:ro
       # - /sys:/host/sys:ro
+    # Match host docker group so non-root user can read the socket (Linux):
+    # export DOCKER_GID=$(getent group docker | cut -d: -f3)
+    group_add:
+      - "${DOCKER_GID:-0}"
     environment:
       - HOST_URL=http://YOUR_SERVER_IP
     restart: unless-stopped

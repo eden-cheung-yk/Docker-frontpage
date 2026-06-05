@@ -13,7 +13,7 @@ Thanks for your interest in contributing! Here's how to get started.
 ### Clone and Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dockerdash.git
+git clone https://github.com/eden-cheung-yk/Docker-frontpage.git
 cd dockerdash
 npm run install:all
 ```

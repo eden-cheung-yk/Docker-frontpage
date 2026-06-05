@@ -4,10 +4,21 @@ import type { WidgetProps, DockerContainer } from '../types';
 import { apiGet } from '../hooks/useApi';
 import { useDashboard } from '../context/DashboardContext';
 
-const STATUS_COLORS: Record<string, string> = {
-  running: '#22c55e', stopped: '#ef4444', paused: '#8b8b8b',
-  restarting: '#f59e0b', dead: '#ef4444', unhealthy: '#f59e0b',
+const STATE_COLORS: Record<string, string> = {
+  running: '#22c55e', exited: '#ef4444', paused: '#8b8b8b',
+  restarting: '#f59e0b', dead: '#ef4444', manual: '#3b82f6',
 };
+
+function stateColor(state: string, health?: string): string {
+  if (health === 'unhealthy') return '#f59e0b';
+  return STATE_COLORS[state] ?? '#8b8b8b';
+}
+
+function stateLabel(c: DockerContainer): string {
+  if (c.health === 'unhealthy') return 'unhealthy';
+  if (c.isManual || c.state === 'manual') return 'manual';
+  return c.status || c.state;
+}
 
 export default function DockerServicesWidget({ settings }: WidgetProps) {
   const { t } = useDashboard();
@@ -81,7 +92,7 @@ export default function DockerServicesWidget({ settings }: WidgetProps) {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 8 }}>
                 {items.map((c, idx) => {
-                  const statusColor = c.health === 'unhealthy' ? STATUS_COLORS.unhealthy : STATUS_COLORS[c.status] || '#8b8b8b';
+                  const statusColor = stateColor(c.state, c.health);
                   return (
                     <a
                       key={c.id}
@@ -122,9 +133,9 @@ export default function DockerServicesWidget({ settings }: WidgetProps) {
                           {c.name}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 2 }}>
-                          <span className={`status-dot status-dot--${c.health === 'unhealthy' ? 'unhealthy' : c.status}`} />
-                          <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'capitalize' }}>
-                            {c.health === 'unhealthy' ? 'unhealthy' : c.status}
+                          <span className={`status-dot status-dot--${c.health === 'unhealthy' ? 'unhealthy' : c.state}`} />
+                          <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                            {stateLabel(c)}
                           </span>
                         </div>
                       </div>

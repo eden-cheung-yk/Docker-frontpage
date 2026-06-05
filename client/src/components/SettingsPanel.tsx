@@ -261,6 +261,46 @@ export default function SettingsPanel({ onClose }: SettingsPanelProps) {
                 <input style={inputStyle} value={settings.title} onChange={e => updateSettings({ title: e.target.value })} />
               </div>
               <div>
+                <label style={labelStyle}>{t('general.displayName')}</label>
+                <input
+                  style={inputStyle}
+                  value={settings.displayName}
+                  onChange={e => updateSettings({ displayName: e.target.value })}
+                  placeholder={t('general.displayNamePlaceholder')}
+                />
+              </div>
+              <div>
+                <label style={labelStyle}>{t('general.smartHeader')}</label>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={settings.showSmartHeader}
+                      onChange={e => updateSettings({ showSmartHeader: e.target.checked })}
+                    />
+                    {t('general.showSmartHeader')}
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={settings.showHealthPills}
+                      onChange={e => updateSettings({ showHealthPills: e.target.checked })}
+                      disabled={!settings.showSmartHeader}
+                    />
+                    {t('general.showHealthPills')}
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, cursor: 'pointer' }}>
+                    <input
+                      type="checkbox"
+                      checked={settings.showSearch}
+                      onChange={e => updateSettings({ showSearch: e.target.checked })}
+                      disabled={!settings.showSmartHeader}
+                    />
+                    {t('general.showSearch')}
+                  </label>
+                </div>
+              </div>
+              <div>
                 <label style={labelStyle}>{t('general.language')}</label>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8 }}>
                   {LANGUAGES.map(lang => (

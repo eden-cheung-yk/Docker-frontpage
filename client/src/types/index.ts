@@ -2,7 +2,10 @@ export interface DockerContainer {
   id: string;
   name: string;
   image: string;
-  status: 'running' | 'stopped' | 'paused' | 'restarting' | 'dead';
+  /** Human-readable status from Docker, e.g. "Up 2 hours" */
+  status: string;
+  /** Machine state from Docker, e.g. "running", "exited" */
+  state: string;
   health?: 'healthy' | 'unhealthy' | 'starting' | 'none';
   ports: PortMapping[];
   url: string | null;
@@ -49,6 +52,10 @@ export interface DashboardSettings {
   title: string;
   theme: string;
   language: string;
+  displayName: string;
+  showSmartHeader: boolean;
+  showHealthPills: boolean;
+  showSearch: boolean;
   accentColor: string;
   backgroundType: 'solid' | 'gradient' | 'image';
   backgroundColor: string;

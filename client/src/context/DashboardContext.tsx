@@ -21,6 +21,10 @@ const defaultSettings: DashboardSettings = {
   title: 'DockerDash',
   theme: 'dark-neon',
   language: 'en',
+  displayName: '',
+  showSmartHeader: true,
+  showHealthPills: true,
+  showSearch: true,
   accentColor: '#00f0ff',
   backgroundType: 'solid',
   backgroundColor: '#0a0e1a',
@@ -32,6 +36,33 @@ const defaultSettings: DashboardSettings = {
   hostUrl: '',
   containerFilter: '',
 };
+
+function parseBool(value: unknown, fallback: boolean): boolean {
+  if (value === undefined || value === null || value === '') return fallback;
+  return value === true || value === 'true';
+}
+
+function parseSettings(raw: Record<string, unknown>): DashboardSettings {
+  return {
+    title: String(raw.title ?? defaultSettings.title),
+    theme: String(raw.theme ?? defaultSettings.theme),
+    language: String(raw.language ?? defaultSettings.language),
+    displayName: String(raw.displayName ?? defaultSettings.displayName),
+    showSmartHeader: parseBool(raw.showSmartHeader, defaultSettings.showSmartHeader),
+    showHealthPills: parseBool(raw.showHealthPills, defaultSettings.showHealthPills),
+    showSearch: parseBool(raw.showSearch, defaultSettings.showSearch),
+    accentColor: String(raw.accentColor ?? defaultSettings.accentColor),
+    backgroundType: (raw.backgroundType as DashboardSettings['backgroundType']) ?? defaultSettings.backgroundType,
+    backgroundColor: String(raw.backgroundColor ?? defaultSettings.backgroundColor),
+    backgroundGradient: String(raw.backgroundGradient ?? defaultSettings.backgroundGradient),
+    backgroundImage: String(raw.backgroundImage ?? defaultSettings.backgroundImage),
+    fontSize: (raw.fontSize as DashboardSettings['fontSize']) ?? defaultSettings.fontSize,
+    dockerSocketPath: String(raw.dockerSocketPath ?? defaultSettings.dockerSocketPath),
+    dockerScanInterval: Number(raw.dockerScanInterval) || defaultSettings.dockerScanInterval,
+    hostUrl: String(raw.hostUrl ?? defaultSettings.hostUrl),
+    containerFilter: String(raw.containerFilter ?? defaultSettings.containerFilter),
+  };
+}
 
 const DashboardContext = createContext<DashboardContextValue | null>(null);
 
@@ -58,12 +89,12 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
           x: number; y: number; w: number; h: number;
           settings: Record<string, unknown>;
         }
-        const [s, rawLayout] = await Promise.all([
-          apiGet<DashboardSettings>('/api/settings').catch(() => defaultSettings),
+        const [rawSettings, rawLayout] = await Promise.all([
+          apiGet<Record<string, unknown>>('/api/settings').catch(() => ({})),
           apiGet<BackendLayoutItem[]>('/api/layout').catch(() => []),
         ]);
         if (cancelled) return;
-        setSettings(s);
+        setSettings(parseSettings(rawSettings));
 
         const layoutItems: LayoutItem[] = rawLayout.map(item => ({
           i: item.instanceId,

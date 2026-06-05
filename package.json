@@ -17,12 +17,12 @@
   "author": "DockerDash Contributors",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/dockerdash.git"
+    "url": "https://github.com/eden-cheung-yk/Docker-frontpage.git"
   },
   "bugs": {
-    "url": "https://github.com/YOUR_USERNAME/dockerdash/issues"
+    "url": "https://github.com/eden-cheung-yk/Docker-frontpage/issues"
   },
-  "homepage": "https://github.com/YOUR_USERNAME/dockerdash#readme",
+  "homepage": "https://github.com/eden-cheung-yk/Docker-frontpage#readme",
   "engines": {
     "node": ">=22.0.0"
   },

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { DashboardProvider, useDashboard } from './context/DashboardContext';
 import TopBar from './components/TopBar';
+import SmartHeader from './components/SmartHeader';
 import WidgetGrid from './components/WidgetGrid';
 import WidgetGallery from './components/WidgetGallery';
 import SettingsPanel from './components/SettingsPanel';
 
 function DashboardShell() {
-  const { isEditMode, isLoading, t } = useDashboard();
+  const { isEditMode, isLoading, settings, t } = useDashboard();
   const [showSettings, setShowSettings] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
 
@@ -38,6 +39,7 @@ function DashboardShell() {
   return (
     <div style={{ minHeight: '100vh' }}>
       <TopBar onOpenSettings={() => setShowSettings(true)} />
+      {settings.showSmartHeader && <SmartHeader />}
       <main style={{ padding: '8px 0' }}>
         <WidgetGrid />
       </main>
